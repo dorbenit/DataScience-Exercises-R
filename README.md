@@ -12,7 +12,7 @@ This assignment explores how to use `ggplot2` to create **effective visualizatio
 - Selecting visualizations that best communicate specific patterns
 - Reflecting on what each plot reveals and why it was chosen
 
-🌐 [View HW1 Report (HTML)](HW1.html)  
+🌐 [View HW1 Report (HTML)](https://dorbenit.github.io/DataScience-Exercises-R/HW1.html)  
 📄 [View HW1 Source Code (Rmd)](HW1.Rmd)
 
 ---
