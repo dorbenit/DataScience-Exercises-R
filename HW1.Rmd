@@ -1,0 +1,147 @@
+---
+title: 'HW1: Data Visualization'
+---
+# Homework 1
+
+### Instructions
+
+1. All assignments are individual!
+2. This assignment should be uploaded as one html file (after knit) before the next Tutorial.
+3. Questions about the assignment should be asked using the Assignments forums. 
+5. Write your name and id at the top of the file 
+
+```{r}
+#knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+library(tidyverse)
+```
+
+### MPG dataset
+```{r}
+data(mpg)
+```
+
+
+```{r}
+str(mpg)
+```
+## Problem 1: Histograms
+
+Using the `mpg` dataset from `ggplot2`:
+
+- Create histograms for the variable `hwy`, grouped by vehicle `class`.
+- Briefly describe differences between the classes.
+
+Two relatively clear trends can be observed: smaller cars such as midsize, compact, and subcompact consume less fuel compared to larger vehicles like minivan, SUV, and pickup.
+The 2seater category is surprising, showing high fuel consumption despite its small size—likely due to other factors.
+```{r}
+range(mpg$hwy)
+library(ggplot2)
+ggplot(mpg, aes(x = hwy))+
+geom_histogram(bins = 32)+
+facet_wrap(~ class)
+
+```
+## Problem 2: Boxplots
+
+Using the `mpg` dataset:
+
+- Create boxplots of `cty` (city mileage) grouped by `drv` (type of drive train).
+- Identify and briefly discuss any noticeable outliers.
+
+ to the rear-wheel drive (r) category — which is not surprising, as this drivetrain is known for high fuel consumption. Additionally, there are almost no anomalies in this group.
+
+In the front-wheel drive (f) category, the median is the highest, indicating the most fuel-efficient performance in city driving. However, this category also includes several anomalies — some highly fuel-efficient vehicles (possibly hybrids or electric cars that may have been grouped here), and one notably inefficient outlier.
+
+The rear-wheel drive (r) category shows the lowest median of all, with no visible outliers in this group.
+```{r}
+ggplot(mpg, aes(x = drv, y = cty)) +
+  geom_boxplot() 
+```
+## Problem 3: Scatterplots
+
+Using the `mpg` dataset:
+
+- Create a scatterplot of `displ` (engine displacement) vs. `hwy` (highway mileage).
+- Briefly describe the relationship.
+- Use the `class` variable to color the points and briefly discuss insights gained.
+
+We can observe the same trend seen in the histogram from Exercise 1, only more clearly here.
+As the engine displacement increases, the hwy value decreases — meaning the car consumes more fuel.
+This helps explain why the 2seater category had high fuel consumption in Exercise 1, despite not being a large vehicle like the others.
+This scatterplot shows that the reason is likely due to its large engine size.
+```{r}
+range(mpg$displ)
+range(mpg$hwy)
+ggplot(data = mpg, aes(x = displ, y =hwy, color = class)) +
+  geom_point()
+  coord_cartesian(xlim = c(1, 7), ylim = c(10, 45))
+```
+## Problem 4: 5 parameters in one graph
+- Pick 3 numerical variables and  2 categorical variable and make a visualization of them and provide an interpretation with your answer.
+```{r}
+library(tidyverse)
+
+mpg_long <- mpg %>%
+  pivot_longer(cols = c(cty, hwy), names_to = "mileage_type", values_to = "mpg_value")
+
+ggplot(mpg_long, aes(x = displ, y = mpg_value, color = class, shape = mileage_type)) +
+  geom_point(alpha = 0.7, size = 3) +
+  labs(
+    title = "MPG by Engine Size, Type of Mileage and Vehicle Class",
+    x = "Engine Displacement (liters)",
+    y = "Miles per Gallon",
+    color = "Vehicle Class",
+    shape = "Mileage Type"
+  ) 
+```
+## Problem 5: Reflection and Interpretation
+
+Reflect briefly (2-3 sentences each) on the following:
+
+- Why is choosing the right visualization type crucial when exploring data?
+
+I tried to compare city and highway fuel efficiency based on engine size and vehicle class.
+Putting both into one graph, as required, took some thought to make sure the results were clear.
+Choosing the right type of graph was important so it wouldn’t be confusing and would show the main patterns.
+By using pivot_longer(), I managed to include three numeric values (engine size, city MPG, and highway MPG—combined into one), and two categories: the type of mileage (city or highway) and the vehicle class.
+
+
+- In what ways can misleading visualizations negatively impact decision-making or understanding?
+
+Misleading visualizations can hide or distort the real story.
+For instance, if I had tried to include both city and highway data in a single plot without structuring it carefully, the result could have been cluttered and hard to interpret.
+This might mislead someone who is mainly interested in one specific aspect, such as city driving performance.
+
+
+- Give an example of a situation where visualizing data helped you understand something better or changed your perspective.
+
+ When I visualized the relationship between engine size and fuel efficiency across different vehicle types, I was surprised to see that two-seater cars, which I expected to be fuel-efficient due to their small size, actually had poor city mileage.  
+ This helped me realize that the "two-seater" category might be broader than I initially thought, possibly including powerful sports cars or other high-performance vehicles with large engines — which could explain their lower fuel efficiency.
+
+## Problem 6: write Rcode for the following graphs
+
+### 1. write a code to plot the following plot.
+for this question use data(mpg, package="ggplot2") 
+```{r}
+ggplot(mpg, aes(x = class, y = cty)) +
+  labs(x = "Class Of Vehicle", y = "City Mileage")+
+  labs( title = "Box Plot",
+        subtitle ="City Mileage group by Class Of Vehicle" )+
+  geom_boxplot(fill = "plum")
+ 
+```
+![](1.png)
+
+### 2. write a code to plot the following plot
+for this question use data(mpg, package="ggplot2")
+```{r}
+ggplot(mpg, aes(x = manufacturer,fill = class))+
+labs(title = "Histogram on Categorical Variable",
+     subtitle = "Manufacturer across Vehicle Classes",
+    x = "Manufacturer",
+    y = "Count")+
+   theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+geom_bar(width = 0.6)
+```  
+![](2.png)
